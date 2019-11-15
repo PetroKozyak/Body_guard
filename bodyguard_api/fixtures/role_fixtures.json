@@ -1,0 +1,17 @@
+[
+  {
+    "model": "bodyguard_api.role",
+    "pk": 1,
+    "fields": {
+      "name": "Customer"
+    }
+  },
+  {
+    "model": "bodyguard_api.role",
+    "pk": 2,
+    "fields": {
+      "name": "Firm"
+    }
+  }
+
+]

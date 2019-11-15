@@ -7,6 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'api-auth/', include('rest_framework.urls')),
     url(r'^api-token-auth/', obtain_jwt_token, name='get-token'),
-    path(r'', include('bodyguard_api.urls'))
-
+    path(r'', include('bodyguard_api.urls')),
 ]

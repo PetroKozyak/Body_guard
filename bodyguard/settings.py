@@ -36,6 +36,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DATETIME_FORMAT': '%d/%m/%Y %H:%M',
 }
 
 INSTALLED_APPS = [
@@ -45,10 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bodyguard_api.apps.BodyguardApiConfig',
     'bodyguard_api',
     'rest_framework',
     'django_extensions',
+
 ]
 
 MIDDLEWARE = [
@@ -134,6 +135,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 JWT_DEFAULT_TIMEDELTA = 5
+
+
 try:
     from .local_settings import *
 except FileNotFoundError as e:

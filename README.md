@@ -13,6 +13,7 @@ cd ../
 pip install -r requirements.txt
 ./manage.py migrate
 echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin@example.com', 'admin@example.com', 'adminadmin')" | python manage.py shell
+/manage.py loaddata bodyguard_api/fixtures/role_fixtures.json
 ./manage.py runserver
 
 ```

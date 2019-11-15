@@ -2,4 +2,4 @@
 venv
 db.sqlite3
 /media
-/BodyGuard/local_settings.py
+/bodyguard/local_settings.py
