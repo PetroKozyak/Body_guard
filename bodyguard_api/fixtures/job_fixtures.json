@@ -1,0 +1,12 @@
+[
+  {
+    "model": "bodyguard_api.Job",
+    "pk": 1,
+    "fields": {
+      "customer": 1,
+      "type_job": 1,
+      "coordinate": "23.2323.2026516.265255",
+      "date_created": "2009-02-02 10:10:10"
+    }
+  }
+]

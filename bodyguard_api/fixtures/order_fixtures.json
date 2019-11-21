@@ -1,0 +1,11 @@
+[
+  {
+    "model": "bodyguard_api.Order",
+    "pk": 1,
+    "fields": {
+      "job": 1,
+      "firm": 1,
+      "price": "8888"
+    }
+  }
+]

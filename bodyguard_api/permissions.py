@@ -38,7 +38,9 @@ class HasPermissionForJob(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if user.is_superuser or user == obj.customer or view.action == RETRIEVE_METHOD:
+        if view.action in [UPDATE_METHOD, PATCH_METHOD] and obj.orders.exists() == True:
+            return False
+        elif user.is_superuser or user == obj.customer or view.action == RETRIEVE_METHOD:
             return True
         else:
             return False

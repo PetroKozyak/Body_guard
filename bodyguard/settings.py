@@ -39,6 +39,8 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d/%m/%Y %H:%M',
 }
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

@@ -10,5 +10,5 @@ router.register(r"feed_back", FirmFeedbackViewSet, basename="feed_back")
 router.register(r"orders", OrderViewSet, basename="orders")
 
 urlpatterns = [
-    path(r'', include(router.urls))
+    path(r'', include(router.urls)),
 ]

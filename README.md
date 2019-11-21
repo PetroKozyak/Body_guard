@@ -18,3 +18,4 @@ echo "from django.contrib.auth.models import User; User.objects.create_superuser
 
 ```
 #Documentation
+https://documenter.getpostman.com/view/9378010/SW7Z3U3a?version=latest

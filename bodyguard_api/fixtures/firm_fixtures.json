@@ -1,0 +1,11 @@
+[
+  {
+    "model": "bodyguard_api.GuardFirm",
+    "pk": 1,
+    "fields": {
+      "owner": 3,
+      "name": "TestFirm",
+      "comment": "Test_comment"
+    }
+  }
+]

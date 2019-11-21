@@ -1,4 +1,3 @@
-from django.core.management import call_command
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -63,11 +62,6 @@ class Job(models.Model):
     TYPE_JOB_CHOICES = ((SOS_TYPE, "SOS"),
                         (REGULAR_JOB, "Regular order"),)
 
-    # TYPE_JOB_MAPPING = (
-    #     (SOS_TYPE, "SOS"),
-    #     (REGULAR_JOB, "Regular order"),
-    # )
-
     type_job = models.IntegerField(choices=TYPE_JOB_CHOICES, default=REGULAR_JOB)
     title = models.CharField(max_length=50, null=True)
     number_guard = models.IntegerField(null=True, blank=True)
@@ -127,6 +121,8 @@ class Order(models.Model):
     firm = models.ForeignKey(GuardFirm, on_delete=models.CASCADE, related_name='orders')
     price = models.FloatField(blank=True)
     approved = models.BooleanField(default=False)
+    pay_date = models.DateTimeField(null=True)
+    transaction_id = models.IntegerField(null=True)
 
     def __str__(self):
         return "{}".format(self.job.title)

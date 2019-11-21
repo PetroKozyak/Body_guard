@@ -1,5 +1,10 @@
+import stripe
+from django.conf import settings
 from rest_framework import serializers
 from bodyguard_api.models import *
+from bodyguard_api.permissions import CREATE_METHOD
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -11,8 +16,8 @@ class UserSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        profile = validated_data.pop('role')
-        role = Role.objects.get(pk=profile)
+        role = validated_data.pop('role')
+        role = Role.objects.get(pk=role)
         instance = User.objects.create(**validated_data)
         instance.profile.role = role
         instance.profile.save()
@@ -46,11 +51,6 @@ class VariantOptionGuardSerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
-    # customer = UserSerializer(read_only=True, default=serializers.CurrentUserDefault())
-
-    # def save(self, **kwargs):
-    #     kwargs["customer"] = self.fields["customer"].get_default()
-    #     return super().save(**kwargs)
 
     def to_representation(self, instance):
         data = super(JobSerializer, self).to_representation(instance)
@@ -69,13 +69,15 @@ class JobSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        if data['type_job'] == Job.REGULAR_JOB:
-            errors = {key: 'This field is required' for key in self.fields.keys()
-                      if not data.get(key) and key not in ['id','comment', 'type','customer','date_created']}
-            if errors:
-                raise serializers.ValidationError(errors)
-            if data.get('start_time_guard') > data.get('end_time_guard'):
-                raise serializers.ValidationError("Finish must occur after start")
+        action = self.context['view'].action
+        if action == CREATE_METHOD:
+            if data.get('type_job') == Job.REGULAR_JOB:
+                errors = {key: 'This field is required' for key in self.fields.keys()
+                          if not data.get(key) and key not in ['id', 'comment', 'type', 'customer', 'date_created']}
+                if errors:
+                    raise serializers.ValidationError(errors)
+                if data.get('start_time_guard') > data.get('end_time_guard'):
+                    raise serializers.ValidationError("Finish must occur after start")
         return data
 
     class Meta:
@@ -123,17 +125,19 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id', 'job', 'firm', 'price', 'approved')
-        read_only_fields = ('firm', )
+        read_only_fields = ('firm',)
 
         extra_kwargs = {
             'approved': {'read_only': True},
             'job': {'read_only': False},
             'price': {'read_only': False, 'required': True},
+            'pay_date': {'read_only': True},
+            'transaction_id': {'read_only': True},
         }
 
     def save(self, **kwargs):
         user = self.context["request"].user
-        if self.context["request"] == "POST":
+        if self.context["request"].method == "POST":
             kwargs["firm"] = user.guard_firm
         return super().save(**kwargs)
 
@@ -142,7 +146,6 @@ class OrderSerializer(serializers.ModelSerializer):
         if job.type_job == Job.SOS_TYPE:
             validated_data['approved'] = True
         return Order.objects.create(**validated_data)
-
 
     def get_extra_kwargs(self):
         extra_kwargs = super(OrderSerializer, self).get_extra_kwargs()
@@ -169,3 +172,17 @@ class OrderSerializer(serializers.ModelSerializer):
         data['job'] = JobSerializer(instance.job).data
 
         return data
+
+
+class PaySerializer(serializers.Serializer):
+    token = serializers.CharField()
+
+    def validate(self, validate_data):
+        token = validate_data.get('token')
+        try:
+            validate_token = stripe.Token.retrieve(token)
+            if validate_token.used:
+                raise serializers.ValidationError({'token': 'This token is already used.'})
+        except Exception as e:
+            raise serializers.ValidationError({'token': 'This token is invalid.'})
+        return validate_data

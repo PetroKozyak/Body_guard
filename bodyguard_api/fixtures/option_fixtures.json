@@ -1,0 +1,16 @@
+[
+  {
+    "model": "bodyguard_api.OptionGuard",
+    "pk": 1,
+    "fields": {
+      "name": "Car"
+    }
+  },
+  {
+    "model": "bodyguard_api.OptionGuard",
+    "pk": 2,
+    "fields": {
+      "name": "Gun"
+    }
+  }
+]
