@@ -1,0 +1,11 @@
+[
+  {
+    "model": "bodyguard_api.FirmFeedback",
+    "pk": 1,
+    "fields": {
+      "feedback": "test feedback",
+      "firm": 1,
+      "customer": 1
+    }
+  }
+]

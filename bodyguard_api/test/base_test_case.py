@@ -6,7 +6,6 @@ from rest_framework import status
 
 
 class BaseTestCase(APITestCase):
-
     ROLE_CUSTOMER_ID = 1
     ROLE_FIRM_ID = 2
 
@@ -18,11 +17,15 @@ class BaseTestCaseAuthUser(APITestCase):
     USER_ID_1 = 1
     USER_ID_2 = 2
     USER_ID_3 = 3
-    USER_ID_4_NOT_EXIST = 4
+    USER_ID_4 = 4
+    USER_ID_5_NOT_EXIST = 5
 
     USER_DEFAULT_PASSWORD = "adminadmin"
 
-
+    FIRM_ID_1 = 1
+    FEEDBACK_ID = 1
+    ORDER_ID_1 = 1
+    JOB_ID_1 = 1
 
     def setUp(self):
         call_command('loaddata', 'role_fixtures.json', verbosity=0)
@@ -30,7 +33,10 @@ class BaseTestCaseAuthUser(APITestCase):
         call_command('loaddata', 'user_profile_fixtures.json', verbosity=0)
         call_command('loaddata', 'option_fixtures.json', verbosity=0)
         call_command('loaddata', 'variant_option_fixtures.json', verbosity=0)
-
+        call_command('loaddata', 'firm_fixtures.json', verbosity=0)
+        call_command('loaddata', 'feedback_fixtures.json', verbosity=0)
+        call_command('loaddata', 'job_fixtures.json', verbosity=0)
+        call_command('loaddata', 'order_fixtures.json', verbosity=0)
 
     def before_test(self, user_id):
         self.user = User.objects.filter(pk=user_id).first()

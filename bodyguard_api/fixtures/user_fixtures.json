@@ -25,5 +25,14 @@
       "password": "pbkdf2_sha256$150000$YnzAVLKes6EZ$OfN3KIGwuL8tM0kx1lCTDXlu2FWqOtJudnaKkL5B+ys=",
       "email": "example3@gmail.com"
     }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "username": "username4",
+      "password": "pbkdf2_sha256$150000$YnzAVLKes6EZ$OfN3KIGwuL8tM0kx1lCTDXlu2FWqOtJudnaKkL5B+ys=",
+      "email": "example4@gmail.com"
+    }
   }
 ]

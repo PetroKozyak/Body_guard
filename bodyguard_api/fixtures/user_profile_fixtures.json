@@ -22,5 +22,13 @@
       "user": 3,
       "role": 2
     }
+  },
+  {
+    "model": "bodyguard_api.UserProfile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "role": 2
+    }
   }
 ]
