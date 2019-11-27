@@ -6,6 +6,7 @@ from rest_framework import status
 
 
 class BaseTestCase(APITestCase):
+    USER_DEFAULT_PASSWORD = "adminadmin"
     ROLE_CUSTOMER_ID = 1
     ROLE_FIRM_ID = 2
 

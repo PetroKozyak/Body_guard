@@ -53,7 +53,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     def pay(self, request, pk):
         serializer = PaySerializer(data=request.data)
         order = Order.objects.get(pk=pk)
-        result = {"success": False, "errors":[]}
+        result = {"success": False, "errors": []}
         if serializer.is_valid():
             try:
                 response = stripe.Charge.create(

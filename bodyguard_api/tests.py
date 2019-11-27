@@ -8,8 +8,10 @@ class UserCreateAPIViewTestCase(BaseTestCase):
     url = reverse("users-list")
 
     createuser = lambda: (
-        ('user_name1', 'Ivan', 'Taran', 'user1@admin.com', 'adminadmin', BaseTestCase.ROLE_CUSTOMER_ID, 2, 201),
-        ('user_name2', 'Taras', 'Baran', 'user2@admin.com', 'adminadmin', BaseTestCase.ROLE_FIRM_ID, 2, 201),
+        ('user_name1', 'Ivan', 'Taran', 'user1@admin.com',
+         BaseTestCase.USER_DEFAULT_PASSWORD, BaseTestCase.ROLE_CUSTOMER_ID, 2, 201),
+        ('user_name2', 'Taras', 'Kobzar', 'user2@admin.com',
+         BaseTestCase.USER_DEFAULT_PASSWORD, BaseTestCase.ROLE_FIRM_ID, 2, 201),
     )
 
     @data_provider(createuser)
@@ -155,13 +157,13 @@ class FirmCreateAPIViewTestCase(BaseTestCaseAuthUser):
         (BaseTestCaseAuthUser.USER_ID_2,
          FirmCreateAPIViewTestCase.FIRM_DATA,
          403,),
-                           (BaseTestCaseAuthUser.USER_ID_4,
-                            FirmCreateAPIViewTestCase.FIRM_DATA,
-                            201,),
-                           (BaseTestCaseAuthUser.USER_ID_5_NOT_EXIST,
-                            FirmCreateAPIViewTestCase.FIRM_DATA,
-                            401,),
-                           )
+        (BaseTestCaseAuthUser.USER_ID_4,
+         FirmCreateAPIViewTestCase.FIRM_DATA,
+         201,),
+        (BaseTestCaseAuthUser.USER_ID_5_NOT_EXIST,
+         FirmCreateAPIViewTestCase.FIRM_DATA,
+         401,),
+    )
 
     @data_provider(create_firm)
     def test_firm_create(self, user_id, data, response_code):
@@ -340,4 +342,3 @@ class PayAPIViewTestCase(BaseTestCaseAuthUser):
         response = self.client.post(url, {"token": token}, format='json')
         if not response.json().get("success"):
             self.assertEqual(errors, response.json().get("errors"))
-
