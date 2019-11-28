@@ -8,20 +8,26 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.ChoiceField(choices=tuple(Role.objects.values_list('id', 'name')), default=Role.CUSTOMER)
+    role = serializers.ChoiceField(choices=Role.TYPE_ROLE, default=Role.CUSTOMER)
+    password_confirm = serializers.CharField(required=False)
 
     def to_representation(self, instance):
         data = super(UserSerializer, self).to_representation(instance)
-        data['role'] = instance.profile.role.name
+        if instance.profile:
+            data['role'] = instance.profile.role.get_name_display()
         return data
 
     def create(self, validated_data):
+        password = validated_data.pop("password", None)
+        validated_data.pop("password_confirm", None)
         role = validated_data.pop('role')
-        role = Role.objects.get(pk=role)
-        instance = User.objects.create(**validated_data)
-        instance.profile.role = role
-        instance.profile.save()
-        return instance
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        role = Role.objects.get(name=role)
+        user.profile.role = role
+        user.profile.save()
+        return user
 
     class Meta:
         model = User
@@ -32,10 +38,12 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "password",
+            "password_confirm",
             "role",
         )
         extra_kwargs = {
             'password': {'write_only': True},
+            'password_confirm': {'write_only': True},
         }
 
 

@@ -3,14 +3,14 @@
     "model": "bodyguard_api.role",
     "pk": 1,
     "fields": {
-      "name": "Customer"
+      "name": 1
     }
   },
   {
     "model": "bodyguard_api.role",
     "pk": 2,
     "fields": {
-      "name": "Firm"
+      "name": 2
     }
   }
 ]

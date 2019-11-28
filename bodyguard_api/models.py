@@ -8,10 +8,13 @@ class Role(models.Model):
     CUSTOMER = 1
     FIRM = 2
 
-    name = models.CharField(max_length=255)
+    TYPE_ROLE = ((CUSTOMER, "Customer"),
+                 (FIRM, "Firm"),)
+
+    name = models.IntegerField(choices=TYPE_ROLE, default=CUSTOMER)
 
     def __str__(self):
-        return self.name
+        return '{}'.format(self.get_name_display())
 
 
 class UserProfile(models.Model):
@@ -19,18 +22,19 @@ class UserProfile(models.Model):
         db_table = "user_profile"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="profile", null=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="profile", default=Role.CUSTOMER)
 
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
 
 class VariantOptionGuard(models.Model):
+    name = models.CharField(max_length=50)
+    option = models.ForeignKey("OptionGuard", on_delete=models.CASCADE, related_name='variants')
+
     class Meta:
         db_table = "variant"
-
-    name = models.CharField(max_length=50)
-    option = models.ForeignKey("OptionGuard", on_delete=models.CASCADE, related_name='variants', null=True)
+        unique_together = ('name', 'option',)
 
     def __str__(self):
         return "{}|{}".format(self.option.name, self.name)
@@ -40,7 +44,7 @@ class OptionGuard(models.Model):
     class Meta:
         db_table = "option"
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -92,13 +96,6 @@ class GuardFirm(models.Model):
     def __str__(self):
         return "{}".format(self.name)
 
-    def as_json(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "comment": self.comment,
-        }
-
 
 class FirmFeedback(models.Model):
     class Meta:
@@ -123,6 +120,10 @@ class Order(models.Model):
     approved = models.BooleanField(default=False)
     pay_date = models.DateTimeField(null=True)
     transaction_id = models.IntegerField(null=True)
+
+    def stripe_price(self, value):
+        stripe_price = value * 100
+        return int(stripe_price)
 
     def __str__(self):
         return "{}".format(self.job.title)

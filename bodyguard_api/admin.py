@@ -14,5 +14,5 @@ class OptionGuardAdmin(admin.ModelAdmin):
 admin.site.register(OptionGuard, OptionGuardAdmin)
 admin.site.register(Job, )
 admin.site.register(GuardFirm, )
-admin.site.register(Order, )
-
+admin.site.register(Role, )
+admin.site.register(UserProfile, )

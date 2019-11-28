@@ -1,6 +1,7 @@
 from datetime import datetime
 import stripe
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from bodyguard import settings
@@ -12,6 +13,8 @@ from bodyguard_api.permissions import HasPermissionForUser, HasPermissionForJob,
     HasPermissionForGuardFirm, HasPermissionForOrder, HasPermissionForFirmFeedback
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+SUCCEEDED = "succeeded"
 
 
 class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
@@ -52,18 +55,19 @@ class OrderViewSet(viewsets.ModelViewSet):
     @action(methods=["post"], detail=True)
     def pay(self, request, pk):
         serializer = PaySerializer(data=request.data)
-        order = Order.objects.get(pk=pk)
+        order = get_object_or_404(Order, pk=pk)
         result = {"success": False, "errors": []}
+        stripe_price = order.stripe_price(order.price)
         if serializer.is_valid():
             try:
                 response = stripe.Charge.create(
-                    amount=int(order.price) * 100,
+                    amount=stripe_price,
                     currency="usd",
-                    source=request.data["token"],  # Done with Stripe.js
+                    source=request.data.get('token'),  # Done with Stripe.js
                     description=order.id
                 )
-                if response.paid and response.status == "succeeded" and response.description == str(order.id) \
-                        and response.amount == int(order.price) * 100:
+                if response.paid and response.status == SUCCEEDED and response.description == str(order.id) \
+                        and response.amount == stripe_price:
                     order.pay_date = datetime.now()
                     order.transaction_id = response.id
                     result["success"] = True

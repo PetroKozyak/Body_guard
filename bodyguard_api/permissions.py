@@ -38,7 +38,7 @@ class HasPermissionForJob(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if view.action in [UPDATE_METHOD, PATCH_METHOD] and obj.orders.exists() == True:
+        if view.action in [UPDATE_METHOD, PATCH_METHOD] and obj.orders.exists() is True:
             return False
         elif user.is_superuser or user == obj.customer or view.action == RETRIEVE_METHOD:
             return True
@@ -65,7 +65,7 @@ class HasPermissionForGuardFirm(permissions.BasePermission):
 class HasPermissionForOrder(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if view.action == LIST_METHOD or user.profile.role.id == Role.FIRM or user.is_superuser\
+        if view.action == LIST_METHOD or user.profile.role.id == Role.FIRM or user.is_superuser \
                 or (user.profile.role.id == Role.CUSTOMER and view.action != CREATE_METHOD):
             return True
         else:
@@ -76,7 +76,7 @@ class HasPermissionForOrder(permissions.BasePermission):
         if user.is_superuser or user == obj.firm.owner or view.action == RETRIEVE_METHOD \
                 or (user == obj.job.customer and view.action in [UPDATE_METHOD, PATCH_METHOD]):
             if user == obj.firm.owner and view.action in [UPDATE_METHOD, PATCH_METHOD, DELETE_METHOD] \
-                    and obj.approved == True:
+                    and obj.approved is True:
                 return False
             return True
         else:
