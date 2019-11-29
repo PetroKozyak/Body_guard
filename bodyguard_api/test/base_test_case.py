@@ -38,6 +38,8 @@ class BaseTestCaseAuthUser(APITestCase):
     FEEDBACK_NOT_EXIST = 2
 
     ORDER_ID_1 = 1
+    ORDER_NOT_EXIST = 2
+
     JOB_ID_1 = 1
     JOB_ID_2_SOS = 2
     JOB_ID_3_REGULAR = 3
