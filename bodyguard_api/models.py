@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 User._meta.get_field("email")._unique = True
 
@@ -68,14 +69,14 @@ class Job(models.Model):
 
     type_job = models.IntegerField(choices=TYPE_JOB_CHOICES, default=REGULAR_JOB)
     title = models.CharField(max_length=50, null=True)
-    number_guard = models.IntegerField(null=True, blank=True)
+    number_guard = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
     variant = models.ManyToManyField(VariantOptionGuard, related_name='jobs', null=True, blank=True)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="jobs")
     start_time_guard = models.DateTimeField(null=True)
     end_time_guard = models.DateTimeField(null=True)
     type = models.IntegerField(choices=TYPE_WORK_CHOICES, null=True, default=ONE_TYPE)
-    coordinate = models.CharField(max_length=250, null=True)
-    comment = models.TextField(null=True, blank=True)
+    coordinate = models.CharField(max_length=100, null=True)
+    comment = models.TextField(max_length=500, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -116,7 +117,7 @@ class Order(models.Model):
     id = models.AutoField(primary_key=True)
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='orders')
     firm = models.ForeignKey(GuardFirm, on_delete=models.CASCADE, related_name='orders')
-    price = models.FloatField(blank=True)
+    price = models.FloatField(blank=True, validators=[MinValueValidator(1), MaxValueValidator(100000)])
     approved = models.BooleanField(default=False)
     pay_date = models.DateTimeField(null=True)
     transaction_id = models.IntegerField(null=True)

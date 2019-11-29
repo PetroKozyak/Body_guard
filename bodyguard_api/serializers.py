@@ -2,7 +2,7 @@ import stripe
 from django.conf import settings
 from rest_framework import serializers
 from bodyguard_api.models import *
-from bodyguard_api.permissions import CREATE_METHOD
+from bodyguard_api.permissions import CREATE_METHOD, UPDATE_METHOD, PATCH_METHOD
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -78,20 +78,39 @@ class JobSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         action = self.context['view'].action
-        if action == CREATE_METHOD:
-            if data.get('type_job') == Job.REGULAR_JOB:
+
+        if action == CREATE_METHOD or action == UPDATE_METHOD:
+            if data.get('type_job') == Job.REGULAR_JOB or self.instance.type_job == Job.REGULAR_JOB:
                 errors = {key: 'This field is required' for key in self.fields.keys()
-                          if not data.get(key) and key not in ['id', 'comment', 'type', 'customer', 'date_created']}
+                          if not data.get(key) and key not in ['id', 'comment', 'customer', 'date_created', 'type_job']}
                 if errors:
                     raise serializers.ValidationError(errors)
                 if data.get('start_time_guard') > data.get('end_time_guard'):
                     raise serializers.ValidationError("Finish must occur after start")
+
         return data
+
+    def get_extra_kwargs(self):
+        extra_kwargs = super(JobSerializer, self).get_extra_kwargs()
+        action = self.context['view'].action
+
+        if action in ['update'] and self.instance.customer == self.context['request'].user:
+            kwargs = extra_kwargs.get('type_job', {})
+            kwargs['read_only'] = True
+            extra_kwargs['type_job'] = kwargs
+
+        return extra_kwargs
 
     class Meta:
         model = Job
         fields = '__all__'
         read_only_fields = ('id', 'customer', 'date_created',)
+
+        extra_kwargs = {
+            'type_job': {'read_only': False}
+        }
+
+
 
 
 class OptionGuardSerializer(serializers.ModelSerializer):
@@ -177,7 +196,8 @@ class OrderSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super(OrderSerializer, self).to_representation(instance)
         data['firm'] = GuardFirmSerializer(instance.firm).data
-        data['job'] = JobSerializer(instance.job).data
+        data['job'] = JobSerializer(instance.job, context={'view': self.context['view'],
+                                                           'request': self.context['request']}).data
 
         return data
 

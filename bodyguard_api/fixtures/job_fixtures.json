@@ -8,5 +8,32 @@
       "coordinate": "23.2323.2026516.265255",
       "date_created": "2009-02-02 10:10:10"
     }
+  },
+  {
+    "model": "bodyguard_api.Job",
+    "pk": 2,
+    "fields": {
+      "customer": 1,
+      "type_job": 1,
+      "coordinate": "23.2323.2026516.265255",
+      "date_created": "2009-02-02 10:10:10"
+    }
+  },
+  {
+    "model": "bodyguard_api.Job",
+    "pk": 3,
+    "fields": {
+      "type_job": 2,
+      "title": "test title",
+      "number_guard": 2,
+      "customer": 1,
+      "variant": [2],
+      "start_time_guard": "2009-02-02 10:10",
+      "end_time_guard": "2010-02-03 10:10",
+      "type": 1,
+      "coordinate": "23.2323.2026516.265255",
+      "comment": "test comment",
+      "date_created": "2010-02-02 10:10:10"
+    }
   }
 ]
