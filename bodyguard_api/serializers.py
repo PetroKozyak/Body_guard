@@ -111,8 +111,6 @@ class JobSerializer(serializers.ModelSerializer):
         }
 
 
-
-
 class OptionGuardSerializer(serializers.ModelSerializer):
     class Meta:
         model = OptionGuard

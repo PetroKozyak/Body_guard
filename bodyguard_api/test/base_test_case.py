@@ -53,11 +53,11 @@ class BaseTestCaseAuthUser(APITestCase):
 
     COORDINATE = "2026516.265255"
     UPDATE_COORDINATE = "update coordinate"
-    BAD_COORDINATE = "56165165165"*100
+    BAD_COORDINATE = "56165165165" * 100
 
     COMMENT = "testcomment"
     UPDATE_COMMENT = "changed comment"
-    BAD_COMMENT = "bad commment"*100
+    BAD_COMMENT = "bad commment" * 100
 
     GOOD_NUMBER_GUARD = random.randint(1, 10)
     BAD_NUMBER_GUARD = random.randint(11, 99999999)
@@ -71,10 +71,10 @@ class BaseTestCaseAuthUser(APITestCase):
     BAD_JOB_TYPE = 3
 
     UPDATE_TITLE = "update test title"
-    BAD_TITLE = "update test title"*100
+    BAD_TITLE = "update test title" * 100
 
     NEW_NAME_FIRM = "New name"
-    NEW_BAD_NAME_FIRM = "New name"*100
+    NEW_BAD_NAME_FIRM = "New name" * 100
 
     def setUp(self):
         call_command('loaddata', 'role_fixtures.json', verbosity=0)
