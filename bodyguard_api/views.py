@@ -1,4 +1,3 @@
-from datetime import datetime
 import stripe
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -12,10 +11,6 @@ from bodyguard_api.serializers import UserSerializer, JobSerializer, GuardFirmSe
 from rest_framework.viewsets import GenericViewSet
 from bodyguard_api.permissions import HasPermissionForUser, HasPermissionForJob, \
     HasPermissionForGuardFirm, HasPermissionForOrder, HasPermissionForFirmFeedback
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
-SUCCEEDED = "succeeded"
 
 
 class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
@@ -59,7 +54,7 @@ class OrderViewSet(StripeHelper, viewsets.ModelViewSet):
         order_pay = get_object_or_404(Order, pk=pk)
         result = {"success": False, "errors": []}
         if serializer.is_valid():
-            result = StripeHelper.create_charge(self, request, order_pay, result, serializer)
+            result = StripeHelper.create_charge(self, request, order_pay, result)
         else:
             result["errors"] = serializer.errors
         return JsonResponse(result)

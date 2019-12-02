@@ -1,7 +1,5 @@
 from datetime import datetime
 import stripe
-from django.http import JsonResponse
-
 from bodyguard import settings
 
 SUCCEEDED = "succeeded"
@@ -9,7 +7,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class StripeHelper:
-    def create_charge(self, request, order, result, serializer):
+    def create_charge(self, request, order, result):
         stripe_price = order.stripe_price(order.price)
         try:
             response = stripe.Charge.create(
