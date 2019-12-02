@@ -1,9 +1,7 @@
-import stripe
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
-from bodyguard import settings
 from bodyguard_api.helpers.stripe_helper import StripeHelper
 from bodyguard_api.models import *
 from bodyguard_api.serializers import UserSerializer, JobSerializer, GuardFirmSerializer, FirmFeedbackSerializer, \

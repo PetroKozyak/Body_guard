@@ -1,5 +1,4 @@
 import random
-
 from django.core.management import call_command
 from rest_framework.test import APITestCase
 from django.urls import reverse
@@ -12,6 +11,9 @@ class BaseTestCase(APITestCase):
     ROLE_CUSTOMER_ID = 1
     ROLE_FIRM_ID = 2
     ROLE_ID_NOT_EXIST = 10
+
+    USER_NAME = 'Taras'
+    USER_LAST_NAME = 'Kobzar'
 
     def setUp(self):
         call_command('loaddata', 'role_fixtures.json', verbosity=0)
