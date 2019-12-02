@@ -13,15 +13,13 @@ from bodyguard_api.permissions import HasPermissionForUser, HasPermissionForJob,
 
 class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
                mixins.UpdateModelMixin, GenericViewSet):
-    queryset = User.objects.prefetch_related("profile").select_related(
-        "profile"
-    )
+    queryset = User.objects.select_related("profile")
     serializer_class = UserSerializer
     permission_classes = (HasPermissionForUser,)
 
 
 class JobViewSet(viewsets.ModelViewSet):
-    queryset = Job.objects.all()
+    queryset = Job.objects.prefetch_related("variant__option")
     serializer_class = JobSerializer
     permission_classes = [HasPermissionForJob]
 
