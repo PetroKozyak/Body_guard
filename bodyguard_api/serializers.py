@@ -79,7 +79,7 @@ class JobSerializer(serializers.ModelSerializer):
     def validate(self, data):
         action = self.context['view'].action
 
-        if action == CREATE_METHOD or action == UPDATE_METHOD:
+        if action in [CREATE_METHOD, UPDATE_METHOD]:
             if data.get('type_job') == Job.REGULAR_JOB or self.instance.type_job == Job.REGULAR_JOB:
                 errors = {key: 'This field is required' for key in self.fields.keys()
                           if not data.get(key) and key not in ['id', 'comment', 'customer', 'date_created', 'type_job']}
@@ -94,7 +94,7 @@ class JobSerializer(serializers.ModelSerializer):
         extra_kwargs = super(JobSerializer, self).get_extra_kwargs()
         action = self.context['view'].action
 
-        if action in ['update'] and self.instance.customer == self.context['request'].user:
+        if action is UPDATE_METHOD and self.instance.customer == self.context['request'].user:
             kwargs = extra_kwargs.get('type_job', {})
             kwargs['read_only'] = True
             extra_kwargs['type_job'] = kwargs
@@ -176,7 +176,7 @@ class OrderSerializer(serializers.ModelSerializer):
         extra_kwargs = super(OrderSerializer, self).get_extra_kwargs()
         action = self.context['view'].action
 
-        if action in ['update', 'partial_update'] and self.instance.job.customer == self.context['request'].user:
+        if action in [UPDATE_METHOD, PATCH_METHOD] and self.instance.job.customer == self.context['request'].user:
             kwargs = extra_kwargs.get('approved', {})
             kwargs['read_only'] = False
             extra_kwargs['approved'] = kwargs

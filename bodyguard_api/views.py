@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from bodyguard import settings
+from bodyguard_api.helpers.stripe_helper import StripeHelper
 from bodyguard_api.models import *
 from bodyguard_api.serializers import UserSerializer, JobSerializer, GuardFirmSerializer, FirmFeedbackSerializer, \
     OrderSerializer, PaySerializer
@@ -47,7 +48,7 @@ class FirmFeedbackViewSet(viewsets.ModelViewSet):
     permission_classes = [HasPermissionForFirmFeedback]
 
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(StripeHelper, viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [HasPermissionForOrder]
@@ -55,24 +56,10 @@ class OrderViewSet(viewsets.ModelViewSet):
     @action(methods=["post"], detail=True)
     def pay(self, request, pk):
         serializer = PaySerializer(data=request.data)
-        order = get_object_or_404(Order, pk=pk)
+        order_pay = get_object_or_404(Order, pk=pk)
         result = {"success": False, "errors": []}
-        stripe_price = order.stripe_price(order.price)
         if serializer.is_valid():
-            try:
-                response = stripe.Charge.create(
-                    amount=stripe_price,
-                    currency="usd",
-                    source=request.data.get('token'),  # Done with Stripe.js
-                    description=order.id
-                )
-                if response.paid and response.status == SUCCEEDED and response.description == str(order.id) \
-                        and response.amount == stripe_price:
-                    order.pay_date = datetime.now()
-                    order.transaction_id = response.id
-                    result["success"] = True
-            except Exception as e:
-                result["errors"].append(e.user_message)
+            result = StripeHelper.create_charge(self, request, order_pay, result, serializer)
         else:
             result["errors"] = serializer.errors
         return JsonResponse(result)

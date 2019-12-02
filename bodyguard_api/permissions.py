@@ -40,7 +40,7 @@ class HasPermissionForJob(permissions.BasePermission):
         user = request.user
         if view.action == PATCH_METHOD:
             return False
-        elif view.action in [UPDATE_METHOD] and obj.orders.exists() is True:
+        elif view.action is UPDATE_METHOD and obj.orders.exists() is True:
             return False
         elif user.is_superuser or user == obj.customer or view.action == RETRIEVE_METHOD:
             return True
