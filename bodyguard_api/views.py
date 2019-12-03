@@ -13,7 +13,7 @@ from bodyguard_api.permissions import HasPermissionForUser, HasPermissionForJob,
 
 class UserView(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,
                mixins.UpdateModelMixin, GenericViewSet):
-    queryset = User.objects.select_related("profile")
+    queryset = User.objects.select_related("profile", "profile__role")
     serializer_class = UserSerializer
     permission_classes = (HasPermissionForUser,)
 
@@ -28,7 +28,7 @@ class JobViewSet(viewsets.ModelViewSet):
 
 
 class GuardFirmViewSet(viewsets.ModelViewSet):
-    queryset = GuardFirm.objects.all()
+    queryset = GuardFirm.objects.select_related("owner", "owner__profile", "owner__profile__role")
     serializer_class = GuardFirmSerializer
     permission_classes = [HasPermissionForGuardFirm]
 
