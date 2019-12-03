@@ -4,7 +4,6 @@ from rest_framework import serializers
 from bodyguard_api.models import *
 from bodyguard_api.permissions import CREATE_METHOD, UPDATE_METHOD, PATCH_METHOD
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class UserSerializer(serializers.ModelSerializer):
