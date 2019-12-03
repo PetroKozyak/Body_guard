@@ -1,9 +1,7 @@
 import stripe
-from django.conf import settings
 from rest_framework import serializers
 from bodyguard_api.models import *
 from bodyguard_api.permissions import CREATE_METHOD, UPDATE_METHOD, PATCH_METHOD
-
 
 
 class UserSerializer(serializers.ModelSerializer):
